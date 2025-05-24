@@ -1,5 +1,6 @@
 package szitt.service;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import szitt.dto.LoginDTO;

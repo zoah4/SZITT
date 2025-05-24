@@ -36,8 +36,6 @@ public class InstructorService {
         User user = instructor.getUser();
         user.setFirstname(dto.getInstructor().getFirstname());
         user.setLastname(dto.getInstructor().getLastname());
-        user.setEmail(dto.getInstructor().getEmail());
-        user.setPassword(passwordEncoder.encode(dto.getInstructor().getPassword()));
 
         instructor.setUser(user);
         instructor.setDescription(dto.getDescription());

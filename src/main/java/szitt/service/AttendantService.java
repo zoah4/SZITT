@@ -34,8 +34,6 @@ public class AttendantService {
         User user = attendant.getUser();
         user.setFirstname(dto.getAttendant().getFirstname());
         user.setLastname(dto.getAttendant().getLastname());
-        user.setEmail(dto.getAttendant().getEmail());
-        user.setPassword(passwordEncoder.encode(dto.getAttendant().getPassword()));
 
         attendant.setUser(user);
 

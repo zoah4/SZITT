@@ -1,5 +1,6 @@
 package szitt.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import szitt.dto.InstructorDTO;
 import szitt.model.Review;
@@ -48,8 +49,9 @@ public class InstructorController {
     }
 
     @PutMapping("/{id}/edit")
-    public void editProfile(@PathVariable Long id, @RequestBody InstructorDTO dto) {
+    public ResponseEntity<String> editProfile(@PathVariable Long id, @RequestBody InstructorDTO dto) {
         this.instructorService.editProfile(id, dto);
+        return ResponseEntity.ok("Profil je uspješno ažuriran.");
     }
 
 }
