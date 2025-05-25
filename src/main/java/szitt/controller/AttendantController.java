@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.*;
 import szitt.dto.AttendantDTO;
 import szitt.dto.ReservationDTO;
 import szitt.dto.ReviewDTO;
+import szitt.model.Reservation;
 import szitt.service.AttendantService;
 import szitt.model.Attendant;
 import szitt.service.ReservationService;
@@ -56,5 +57,10 @@ public class AttendantController {
     @PostMapping("/{attendantId}/reservation/{reservationId}/reviews")
     public void writeReview(@PathVariable Long attendantId, @PathVariable Long reservationId, @RequestBody ReviewDTO dto) {
         this.reviewService.writeReview(attendantId, reservationId, dto);
+    }
+
+    @GetMapping("/{id}/reservations")
+    public Iterable<Reservation> getAcceptedReservations(@PathVariable Long id) {
+        return this.reservationService.getAcceptedReservations(id);
     }
 }

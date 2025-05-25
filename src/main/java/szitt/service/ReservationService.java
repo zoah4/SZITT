@@ -209,4 +209,12 @@ public class ReservationService {
 
         onWait(reservation.getId(), attendantId);
     }
+
+    public Iterable<Reservation> getPendingReservations(Long id) {
+        return this.reservationRepository.findByInstructorIdAndStatus(id, StatusEnum.NA_CEKANJU);
+    }
+
+    public Iterable<Reservation> getAcceptedReservations(Long id) {
+        return this.reservationRepository.findByAttendantIdAndStatus(id, StatusEnum.POTVRDENO);
+    }
 }
