@@ -2,6 +2,8 @@
   <div class="max-w-3xl mx-auto p-4">
     <h1 class="text-2xl font-bold mb-4">Moj Profil</h1>
     <hr class="my-6" />
+    <Notifications :userId="user.id" />
+
     <section class="border p-4 rounded">
       <h2 class="text-xl font-semibold mb-3">Podaci o instrukcijama</h2>
       <form @submit.prevent="updateInstructions">
@@ -50,14 +52,56 @@
         </label>
       </div>
     </div>
+    <div class="mt-6">
+      <h2 class="text-xl font-bold mb-3">Zahtjevi za instrukcije</h2>
+
+      <div v-if="loading">Učitavanje zahtjeva...</div>
+      <div v-else-if="reservations.length === 0" class="text-gray-500">Nema novih zahtjeva.</div>
+
+      <div v-else class="space-y-4">
+        <div
+            v-for="rez in reservations"
+            :key="rez.id"
+            class="p-4 border rounded shadow bg-white">
+          <div class="font-semibold">{{ rez.attendant.user.firstname }} {{ rez.attendant.lastname }}</div>
+          <div class="text-sm text-gray-600">Predmet: {{ rez.subject.name }}</div>
+          <div class="text-sm text-gray-600">Od: {{formatDate(rez.dateFrom) }} - Do: {{ formatDate(rez.dateTo) }}</div>
+          <div class="text-sm text-gray-600">Trajanje: {{ rez.duration }}</div>
+
+          <div class="text-sm text-gray-600">Lokacija: {{ rez.location }}</div>
+          <div class="mt-3 space-x-2">
+            <button
+                class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                @click="prihvatiZahtjev(rez.id)">
+              Prihvati
+            </button>
+            <button
+                class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                @click="odbijZahtjev(rez.id)">
+              Odbij
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ConfirmedReservations :userId="user.id" />
   </div>
 </template>
 
 <script>
+import Notifications from '@/components/Notifications.vue'
+import ConfirmedReservations from '@/components/ConfirmedReservationsInstructor.vue'
+import { format } from 'date-fns'
+
 export default {
+  components: {
+    Notifications,
+    ConfirmedReservations
+  },
   name: 'InstruktorProfile',
   data() {
     return {
+      user : JSON.parse(localStorage.getItem('korisnik')),
       korisnik: '',
       profile: {
         email: '',
@@ -72,12 +116,14 @@ export default {
       },
       selectedSubjects: [],
       allSubjects: [],
+      reservations: [],
+      loading: false,
     }
   },
   methods: {
     async getProfile() {
       try {
-        const korisnik = JSON.parse(localStorage.getItem('korisnik'))
+        const korisnik = this.user
         const korisnikEmail = korisnik?.email
         const res = await fetch( `/api/user/email/${korisnikEmail}`)
         const data1 = await res.json()
@@ -85,9 +131,52 @@ export default {
         this.profile = data1
         const data2 = await fetch(`api/instructor/${this.profile.id}`)
         this.instrukcijePodaci = await data2.json()
-
+        this.fetchReservations()
       } catch (err) {
         console.error('Greška pri dohvatu profila:', err)
+      }
+    },
+    async fetchReservations() {
+      this.loading = true
+      try {
+        const res = await fetch(`/api/instructor/${this.user.id}/reservations`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        })
+        this.reservations = await res.json()
+        console.log(this.reservations)
+
+      } catch (err) {
+        console.error('Greška pri dohvatu zahtjeva:', err)
+      } finally {
+        this.loading = false
+      }
+    },
+    async prihvatiZahtjev(reservationId) {
+      try {
+        await fetch(`/api/instructor/${reservationId}/user/${this.user.id}/accept`, {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        })
+        this.fetchReservations()
+      } catch (err) {
+        console.error('Greška pri prihvaćanju zahtjeva:', err)
+      }
+    },
+    async odbijZahtjev(reservationId) {
+      try {
+        await fetch(`/api/instructor/${reservationId}/user/${this.user.id}/reject`, {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        })
+        this.fetchReservations()
+      } catch (err) {
+        console.error('Greška pri odbijanju zahtjeva:', err)
       }
     },
     async getSubjects() {
@@ -149,7 +238,14 @@ export default {
         console.error(err)
         alert('Nešto je pošlo po zlu.')
       }
-    }
+    },
+     formatDate(dateStr) {
+        try {
+          return format(new Date(dateStr), 'dd.MM.yyyy. HH:mm')
+        } catch {
+          return dateStr
+      }
+}
   },
   mounted() {
     this.getProfile()
