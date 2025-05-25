@@ -38,14 +38,14 @@ public class InstructorController {
         return this.reviewService.getAllByInstructor(instructorId);
     }
 
-    @PutMapping("{reservationId}/accept")
-    public void acceptReservation(@PathVariable Long reservationId) {
-        this.reservationservice.confirm(reservationId);
+    @PutMapping("{reservationId}/user/{userId}/accept")
+    public void acceptReservation(@PathVariable Long reservationId, @PathVariable Long userId) {
+        this.reservationservice.confirm(reservationId, userId);
     }
 
-    @PutMapping("{reservationId}/reject")
-    public void rejectReservation(@PathVariable Long reservationId) {
-        this.reservationservice.reject(reservationId);
+    @PutMapping("{reservationId}/user/{userId}/reject")
+    public void rejectReservation(@PathVariable Long reservationId, @PathVariable Long userId) {
+        this.reservationservice.reject(reservationId, userId);
     }
 
     @PutMapping("/{id}/edit")

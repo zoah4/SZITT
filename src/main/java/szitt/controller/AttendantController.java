@@ -33,14 +33,14 @@ public class AttendantController {
         return this.attendantService.getAttendant(id);
     }
 
-    @PutMapping("{reservationId}/accept")
-    public void acceptReservation(@PathVariable Long reservationId) {
-        this.reservationService.confirm(reservationId);
+    @PutMapping("{reservationId}/user/{userId}/accept")
+    public void acceptReservation(@PathVariable Long reservationId, @PathVariable Long userId) {
+        this.reservationService.confirm(reservationId, userId);
     }
 
-    @PutMapping("{reservationId}/cancel")
-    public void cancelReservation(@PathVariable Long reservationId) {
-        this.reservationService.cancel(reservationId);
+    @PutMapping("{reservationId}/user/{userId}/cancel")
+    public void cancelReservation(@PathVariable Long reservationId, @PathVariable Long userId) {
+        this.reservationService.cancel(reservationId, userId);
     }
 
     @PutMapping("/{id}/edit")

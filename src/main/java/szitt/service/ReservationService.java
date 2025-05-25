@@ -2,8 +2,10 @@ package szitt.service;
 
 import org.springframework.stereotype.Service;
 import szitt.dto.NotificationDTO;
+import szitt.dto.RegisterDTO;
 import szitt.dto.ReservationDTO;
 import szitt.enums.StatusEnum;
+import szitt.enums.TypeEnum;
 import szitt.model.*;
 import szitt.repository.AttendantRepository;
 import szitt.repository.InstructorRepository;
@@ -37,40 +39,144 @@ public class ReservationService {
         return this.reservationRepository.findById(id);
     }
 
-    public void confirm(Long id) {
-        Optional<Reservation> reservation = this.reservationRepository.findById(id);
+    public void confirm(Long reservationId, Long userId) {
+        Optional<Reservation> reservation = this.reservationRepository.findById(reservationId);
         reservation.get().setStatus(StatusEnum.POTVRDENO);
         reservationRepository.save(reservation.get());
 
-        /*NotificationDTO notification = new NotificationDTO();
-        notification.setType();
-        notification.setUser(reservation.get().get);
-        notification.setContent();
-        this.notificationService.sendNotification(notification);*/
+        RegisterDTO user = new RegisterDTO();
+
+        if(userId == reservation.get().getAttendant().getId()) {
+            user.setFirstname(reservation.get().getInstructor().getUser().getFirstname());
+            user.setLastname(reservation.get().getInstructor().getUser().getLastname());
+            user.setEmail(reservation.get().getInstructor().getUser().getEmail());
+            user.setPassword(reservation.get().getInstructor().getUser().getPassword());
+            user.setRole(reservation.get().getInstructor().getUser().getRole());
+        } else if(userId == reservation.get().getInstructor().getId()) {
+            user.setFirstname(reservation.get().getAttendant().getUser().getFirstname());
+            user.setLastname(reservation.get().getAttendant().getUser().getLastname());
+            user.setEmail(reservation.get().getAttendant().getUser().getEmail());
+            user.setPassword(reservation.get().getAttendant().getUser().getPassword());
+            user.setRole(reservation.get().getAttendant().getUser().getRole());
+        }
+
+        NotificationDTO notification = new NotificationDTO();
+        notification.setType(TypeEnum.POTVRDA);
+        notification.setUser(user);
+        notification.setContent("Vaš termin je potvrđen.");
+        this.notificationService.sendNotification(notification);
     }
 
-    public void reject(Long id) {
-        Optional<Reservation> reservation = this.reservationRepository.findById(id);
-        reservation.get().setStatus(StatusEnum.OTKAZANO);
-        reservationRepository.save(reservation.get());
-    }
-
-    public void cancel(Long id) {
-        Optional<Reservation> reservation = this.reservationRepository.findById(id);
+    public void reject(Long reservationId, Long userId) {
+        Optional<Reservation> reservation = this.reservationRepository.findById(reservationId);
         reservation.get().setStatus(StatusEnum.ODBIJENO);
         reservationRepository.save(reservation.get());
+
+        RegisterDTO user = new RegisterDTO();
+
+        if(userId == reservation.get().getAttendant().getId()) {
+            user.setFirstname(reservation.get().getInstructor().getUser().getFirstname());
+            user.setLastname(reservation.get().getInstructor().getUser().getLastname());
+            user.setEmail(reservation.get().getInstructor().getUser().getEmail());
+            user.setPassword(reservation.get().getInstructor().getUser().getPassword());
+            user.setRole(reservation.get().getInstructor().getUser().getRole());
+        } else if(userId == reservation.get().getInstructor().getId()) {
+            user.setFirstname(reservation.get().getAttendant().getUser().getFirstname());
+            user.setLastname(reservation.get().getAttendant().getUser().getLastname());
+            user.setEmail(reservation.get().getAttendant().getUser().getEmail());
+            user.setPassword(reservation.get().getAttendant().getUser().getPassword());
+            user.setRole(reservation.get().getAttendant().getUser().getRole());
+        }
+
+        NotificationDTO notification = new NotificationDTO();
+        notification.setType(TypeEnum.OTKAZIVANJE);
+        notification.setUser(user);
+        notification.setContent("Nažalost, vaš zahtjev za termin je odbijen.");
+        this.notificationService.sendNotification(notification);
     }
 
-    public void markAsCompleted(Long id) {
-        Optional<Reservation> reservation = this.reservationRepository.findById(id);
+    public void cancel(Long reservationId, Long userId) {
+        Optional<Reservation> reservation = this.reservationRepository.findById(reservationId);
+        reservation.get().setStatus(StatusEnum.OTKAZANO);
+        reservationRepository.save(reservation.get());
+
+        RegisterDTO user = new RegisterDTO();
+
+        if(userId == reservation.get().getAttendant().getId()) {
+            user.setFirstname(reservation.get().getInstructor().getUser().getFirstname());
+            user.setLastname(reservation.get().getInstructor().getUser().getLastname());
+            user.setEmail(reservation.get().getInstructor().getUser().getEmail());
+            user.setPassword(reservation.get().getInstructor().getUser().getPassword());
+            user.setRole(reservation.get().getInstructor().getUser().getRole());
+        } else if(userId == reservation.get().getInstructor().getId()) {
+            user.setFirstname(reservation.get().getAttendant().getUser().getFirstname());
+            user.setLastname(reservation.get().getAttendant().getUser().getLastname());
+            user.setEmail(reservation.get().getAttendant().getUser().getEmail());
+            user.setPassword(reservation.get().getAttendant().getUser().getPassword());
+            user.setRole(reservation.get().getAttendant().getUser().getRole());
+        }
+
+        NotificationDTO notification = new NotificationDTO();
+        notification.setType(TypeEnum.OTKAZIVANJE);
+        notification.setUser(user);
+        notification.setContent("Rezervacija termina je otkazana.");
+        this.notificationService.sendNotification(notification);
+    }
+
+    public void markAsCompleted(Long reservationId, Long userId) {
+        Optional<Reservation> reservation = this.reservationRepository.findById(reservationId);
         reservation.get().setStatus(StatusEnum.ODRADENO);
         reservationRepository.save(reservation.get());
+
+        RegisterDTO user = new RegisterDTO();
+
+        if(userId == reservation.get().getAttendant().getId()) {
+            user.setFirstname(reservation.get().getInstructor().getUser().getFirstname());
+            user.setLastname(reservation.get().getInstructor().getUser().getLastname());
+            user.setEmail(reservation.get().getInstructor().getUser().getEmail());
+            user.setPassword(reservation.get().getInstructor().getUser().getPassword());
+            user.setRole(reservation.get().getInstructor().getUser().getRole());
+        } else if(userId == reservation.get().getInstructor().getId()) {
+            user.setFirstname(reservation.get().getAttendant().getUser().getFirstname());
+            user.setLastname(reservation.get().getAttendant().getUser().getLastname());
+            user.setEmail(reservation.get().getAttendant().getUser().getEmail());
+            user.setPassword(reservation.get().getAttendant().getUser().getPassword());
+            user.setRole(reservation.get().getAttendant().getUser().getRole());
+        }
+
+        NotificationDTO notification = new NotificationDTO();
+        notification.setType(TypeEnum.POTVRDA);
+        notification.setUser(user);
+        notification.setContent("Termin je uspješno održan.");
+        this.notificationService.sendNotification(notification);
     }
 
-    public void onWait(Long id) {
-        Optional<Reservation> reservation = this.reservationRepository.findById(id);
+    public void onWait(Long reservationId, Long userId) {
+        Optional<Reservation> reservation = this.reservationRepository.findById(reservationId);
         reservation.get().setStatus(StatusEnum.NA_CEKANJU);
         reservationRepository.save(reservation.get());
+
+        RegisterDTO user = new RegisterDTO();
+
+        if(userId == reservation.get().getAttendant().getId()) {
+            user.setFirstname(reservation.get().getInstructor().getUser().getFirstname());
+            user.setLastname(reservation.get().getInstructor().getUser().getLastname());
+            user.setEmail(reservation.get().getInstructor().getUser().getEmail());
+            user.setPassword(reservation.get().getInstructor().getUser().getPassword());
+            user.setRole(reservation.get().getInstructor().getUser().getRole());
+        } else if(userId == reservation.get().getInstructor().getId()) {
+            user.setFirstname(reservation.get().getAttendant().getUser().getFirstname());
+            user.setLastname(reservation.get().getAttendant().getUser().getLastname());
+            user.setEmail(reservation.get().getAttendant().getUser().getEmail());
+            user.setPassword(reservation.get().getAttendant().getUser().getPassword());
+            user.setRole(reservation.get().getAttendant().getUser().getRole());
+        }
+
+        NotificationDTO notification = new NotificationDTO();
+        notification.setType(TypeEnum.ZAHTJEV);
+        notification.setUser(user);
+        notification.setContent("Vaš zahtjev za termin je poslan i čeka potvrdu.");
+        this.notificationService.sendNotification(notification);
     }
 
     public Optional<ReservationReview> getReservationWithReview(Long reservationId) {
@@ -101,5 +207,6 @@ public class ReservationService {
         attendant.setNumOfReservations(attendant.getNumOfReservations() + 1);
         this.attendantRepository.save(attendant);
 
+        onWait(reservation.getId(), attendantId);
     }
 }

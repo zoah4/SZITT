@@ -1,14 +1,12 @@
 package szitt.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import szitt.dto.ReviewDTO;
 import szitt.model.Reservation;
 import szitt.repository.ReservationRepository;
 import szitt.repository.ReviewRepository;
 import szitt.model.Review;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -47,7 +45,12 @@ public class ReviewService {
         review.setReservation(reservation);
         review.setAttendant(reservation.getAttendant());
         review.setInstructor(reservation.getInstructor());
-        review.setRating(dto.getRating());
+
+        if (dto.getRating() < 1 || dto.getRating() > 5) {
+            throw new IllegalArgumentException("Ocjena mora biti između 1 i 5.");
+        } else {
+            review.setRating(dto.getRating());
+        }
         review.setComment(dto.getComment());
         review.setDate(dto.getDate());
 

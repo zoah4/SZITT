@@ -25,29 +25,29 @@ public class ReservationController {
         return this.service.getReservation(id);
     }
 
-    @PutMapping("/{id}/confirm")
-    public void confirm(@PathVariable Long id) {
-        this.service.confirm(id);
+    @PutMapping("/{reservationId}/user/{userId}/confirm")
+    public void confirm(@PathVariable Long reservationId, @PathVariable Long userId) {
+        this.service.confirm(reservationId, userId);
     }
 
-    @PutMapping("/{id}/reject")
-    public void reject(@PathVariable Long id) {
-        this.service.reject(id);
+    @PutMapping("/{reservationId}/user/{userId}/reject")
+    public void reject(@PathVariable Long reservationId, @PathVariable Long userId) {
+        this.service.reject(reservationId, userId);
     }
 
-    @PutMapping("/{id}/cancel")
-    public void cancel(@PathVariable Long id) {
-        this.service.cancel(id);
+    @PutMapping("/{reservationId}/user/{userId}/cancel")
+    public void cancel(@PathVariable Long reservationId, @PathVariable Long userId) {
+        this.service.cancel(reservationId, userId);
     }
 
-    @PutMapping("/{id}/complete")
-    public void markAsCompleted(@PathVariable Long id) {
-        this.service.markAsCompleted(id);
+    @PutMapping("/{reservationId}/user/{userId}/complete")
+    public void markAsCompleted(@PathVariable Long reservationId, @PathVariable Long userId) {
+        this.service.markAsCompleted(reservationId, userId);
     }
 
-    @PutMapping("/{id}/wait")
-    public void onWait(@PathVariable Long id) {
-        this.service.onWait(id);
+    @PutMapping("/{reservationId}/user/{userId}/wait")
+    public void onWait(@PathVariable Long reservationId, @PathVariable Long userId) {
+        this.service.onWait(reservationId, userId);
     }
 
     @GetMapping("/{reservationId}/review")
