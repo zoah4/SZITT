@@ -4,42 +4,82 @@
     <hr class="my-6" />
     <Notifications :userId="user.id" />
 
-    <section class="border p-4 rounded">
-      <h2 class="text-xl font-semibold mb-3">Podaci o instrukcijama</h2>
-      <form @submit.prevent="updateInstructions">
-        <div class="mb-2">
-          <label>Email:</label>
-          <input v-model="profile.email" class="input" disabled />
-        </div>
-        <div class="mb-2">
-          <label>Ime:</label>
-          <input v-model="profile.firstname" class="input" />
-        </div>
-        <div class="mb-2">
-          <label>Prezime:</label>
-          <input v-model="profile.lastname" class="input" />
-        </div>
+    <section style="display: flex;">
+      <div style="width: 50%">
+        <h2 class="text-xl font-semibold mb-3">Podaci o instrukcijama</h2>
+        <form class="forma" @submit.prevent="updateInstructions">
+          <div class="mb-2 ">
+            <label>Email:</label>
+            <input v-model="profile.email" class="input" disabled />
+          </div>
+          <div class="mb-2 ">
+            <label>Ime:</label>
+            <input v-model="profile.firstname" class="input" />
+          </div>
+          <div class="mb-2 ">
+            <label>Prezime:</label>
+            <input v-model="profile.lastname" class="input" />
+          </div>
 
-        <div class="mb-2">
-          <label>Opis profila:</label>
-          <textarea v-model="instrukcijePodaci.description" class="input" rows="4" placeholder="Unesite opis instruktora"></textarea>
+          <div class="mb-2 ">
+            <label>Opis profila:</label>
+            <textarea v-model="instrukcijePodaci.description" class="input" rows="4" placeholder="Unesite opis instruktora"></textarea>
+          </div>
+          <div class="mb-2 ">
+            <label>Cijena po satu (EUR):</label>
+            <input
+                type="number"
+                v-model.number="instrukcijePodaci.pricePerHour"
+                class="input"
+                min="0"
+                step="0.01"
+                placeholder="Unesite cijenu po satu"
+            />
+          </div>
+          <br>
+          <button class="btn btn-primary" type="submit">Spremi podatke instrukcija</button>
+        </form>
+      </div>
+      <div>
+        <div class="mt-6">
+          <h2 class="text-xl font-bold mb-3">Zahtjevi za instrukcije</h2>
+
+          <div v-if="loading">Učitavanje zahtjeva...</div>
+          <div v-else-if="reservations.length === 0" class="text-gray-500">Nema novih zahtjeva.</div>
+
+          <div v-else class="space-y-4">
+            <div
+                v-for="rez in reservations"
+                :key="rez.id"
+                class="p-4 border rounded shadow bg-white">
+              <div class="font-semibold">{{ rez.attendant.user.firstname }} {{ rez.attendant.lastname }}</div>
+              <div class="text-sm text-gray-600">Predmet: {{ rez.subject.name }}</div>
+              <div class="text-sm text-gray-600">Od: {{formatDate(rez.dateFrom) }} - Do: {{ formatDate(rez.dateTo) }}</div>
+              <div class="text-sm text-gray-600">Trajanje: {{ rez.duration }}</div>
+
+              <div class="text-sm text-gray-600">Lokacija: {{ rez.location }}</div>
+              <div class="mt-3 space-x-2">
+                <button
+                    class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                    @click="prihvatiZahtjev(rez.id)">
+                  Prihvati
+                </button>
+                <button
+                    class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                    @click="odbijZahtjev(rez.id)">
+                  Odbij
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="mb-2">
-          <label>Cijena po satu (EUR):</label>
-          <input
-              type="number"
-              v-model.number="instrukcijePodaci.pricePerHour"
-              class="input"
-              min="0"
-              step="0.01"
-              placeholder="Unesite cijenu po satu"
-          />
-        </div>
-        <button class="btn btn-primary" type="submit">Spremi podatke instrukcija</button>
-      </form>
+        <ConfirmedReservations :userId="user.id" />
+      </div>
+
     </section>
     <div class="mb-4">
       <h3 class="text-lg font-semibold mb-2">Predmeti koje podučavam:</h3>
+
       <div v-for="predmet in allSubjects" :key="predmet.id" class="mb-1">
         <label>
           <input
@@ -52,51 +92,24 @@
         </label>
       </div>
     </div>
-    <div class="mt-6">
-      <h2 class="text-xl font-bold mb-3">Zahtjevi za instrukcije</h2>
+    <br>
+    <SubjectManager />
 
-      <div v-if="loading">Učitavanje zahtjeva...</div>
-      <div v-else-if="reservations.length === 0" class="text-gray-500">Nema novih zahtjeva.</div>
-
-      <div v-else class="space-y-4">
-        <div
-            v-for="rez in reservations"
-            :key="rez.id"
-            class="p-4 border rounded shadow bg-white">
-          <div class="font-semibold">{{ rez.attendant.user.firstname }} {{ rez.attendant.lastname }}</div>
-          <div class="text-sm text-gray-600">Predmet: {{ rez.subject.name }}</div>
-          <div class="text-sm text-gray-600">Od: {{formatDate(rez.dateFrom) }} - Do: {{ formatDate(rez.dateTo) }}</div>
-          <div class="text-sm text-gray-600">Trajanje: {{ rez.duration }}</div>
-
-          <div class="text-sm text-gray-600">Lokacija: {{ rez.location }}</div>
-          <div class="mt-3 space-x-2">
-            <button
-                class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-                @click="prihvatiZahtjev(rez.id)">
-              Prihvati
-            </button>
-            <button
-                class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                @click="odbijZahtjev(rez.id)">
-              Odbij
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <ConfirmedReservations :userId="user.id" />
   </div>
 </template>
 
 <script>
 import Notifications from '@/components/Notifications.vue'
 import ConfirmedReservations from '@/components/ConfirmedReservationsInstructor.vue'
+import SubjectManager from '@/components/SubjectManager.vue'
+
 import { format } from 'date-fns'
 
 export default {
   components: {
     Notifications,
-    ConfirmedReservations
+    ConfirmedReservations,
+    SubjectManager
   },
   name: 'InstruktorProfile',
   data() {
@@ -162,6 +175,8 @@ export default {
           }
         })
         this.fetchReservations()
+        this.$router.push('/profil')
+
       } catch (err) {
         console.error('Greška pri prihvaćanju zahtjeva:', err)
       }
@@ -266,5 +281,8 @@ export default {
   border-radius: 8px;
   background-color: #2b6cb0;
   color: white;
+}
+.forma {
+  width: 40%;
 }
 </style>

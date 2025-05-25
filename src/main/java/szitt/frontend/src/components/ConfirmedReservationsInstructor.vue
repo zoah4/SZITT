@@ -6,9 +6,10 @@
 
     <ul v-else class="space-y-3">
       <li v-for="rez in reservations" :key="rez.id" class="p-3 border rounded">
-        <div><strong>Instruktor:</strong> {{ rez.instructor.user.firstname }} {{ rez.instructor.user.lastname }}</div>
+        <div><strong>Polaznik:</strong> {{ rez.attendant.user.firstname }} {{ rez.attendant.user.lastname }}</div>
         <div><strong>Predmet:</strong> {{ rez.subject.name }}</div>
         <div><strong>Vrijeme:</strong> {{ formatDate(rez.dateFrom) }} - {{ formatDate(rez.dateTo) }}</div>
+        <div><strong>Trajanje:</strong> {{ rez.duration }}</div>
         <div><strong>Lokacija:</strong> {{ rez.location }}</div>
         <button
             class="mt-3 px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-sm"
@@ -46,7 +47,7 @@ export default {
   methods: {
     async fetchReservations() {
       try {
-        const response = await fetch(`/api/attendant/${this.userId}/reservations`)
+        const response = await fetch(`/api/instructor/${this.userId}/reservations/accepted`)
         const data = await response.json()
 
         this.reservations = data

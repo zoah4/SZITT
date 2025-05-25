@@ -2,7 +2,7 @@
   <div class="my-4">
     <button
         @click="toggle"
-        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded"
+        class="btn btn-outline bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded"
     >
       {{ prikazi ? 'Zatvori obavijesti' : 'Prikaži obavijesti' }}
     </button>
@@ -25,6 +25,7 @@
             <div class="text-xs text-gray-400 mt-1">Zahtjev kreiran:
               {{ formatDate(notif.created) }}
             </div>
+            <hr>
           </li>
         </ul>
       </div>
@@ -96,5 +97,16 @@ export default {
 .fade-leave-to {
   opacity: 0;
   transform: scale(0.98);
+}
+.btn {
+  padding: 6px 12px;
+  background-color: #2b6cb0;
+  color: white;
+  border-radius: 6px;
+}
+.btn-outline {
+  background: transparent;
+  border: 1px solid #2b6cb0;
+  color: #2b6cb0;
 }
 </style>
