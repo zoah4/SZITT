@@ -243,4 +243,14 @@ public class ReservationService {
                 ))
                 .collect(Collectors.toList());
     }
+
+    public Iterable<Reservation> getCompletedReservations(Long id) {
+        boolean isAttendant = attendantRepository.existsById(id);
+
+        if (isAttendant) {
+            return this.reservationRepository.findByAttendantIdAndStatus(id, StatusEnum.ODRADENO);
+        } else {
+            return this.reservationRepository.findByInstructorIdAndStatus(id, StatusEnum.ODRADENO);
+        }
+    }
 }

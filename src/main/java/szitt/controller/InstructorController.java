@@ -65,4 +65,9 @@ public class InstructorController {
         return this.reservationService.getAcceptedReservations(id);
     }
 
+    @GetMapping("/{id}/reservations/completed")
+    public Iterable<Reservation> getCompletedReservations(@PathVariable Long id) {
+        return this.reservationService.getCompletedReservations(id);
+    }
+
 }
