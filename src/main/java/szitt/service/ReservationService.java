@@ -13,6 +13,8 @@ import szitt.repository.ReservationRepository;
 import szitt.repository.SubjectRepository;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class ReservationService {
@@ -215,6 +217,30 @@ public class ReservationService {
     }
 
     public Iterable<Reservation> getAcceptedReservations(Long id) {
-        return this.reservationRepository.findByAttendantIdAndStatus(id, StatusEnum.POTVRDENO);
+        boolean isAttendant = attendantRepository.existsById(id);
+
+        if (isAttendant) {
+            return this.reservationRepository.findByAttendantIdAndStatus(id, StatusEnum.POTVRDENO);
+        } else {
+            return this.reservationRepository.findByInstructorIdAndStatus(id, StatusEnum.POTVRDENO);
+        }
+    }
+
+    public Iterable<ReservationDTO> searchReservations(Long instructorId, Long attendantId, Long subjectId) {
+        Iterable<Reservation> reservations = reservationRepository.findByCriteria(instructorId, attendantId, subjectId);
+
+        return StreamSupport.stream(reservations.spliterator(), false)
+                .map(reservation -> new ReservationDTO(
+                        reservation.getAttendant().getId(),
+                        reservation.getInstructor().getId(),
+                        reservation.getSubject().getId(),
+                        reservation.getDateFrom(),
+                        reservation.getDateTo(),
+                        reservation.getDuration(),
+                        reservation.getLocation(),
+                        reservation.getStatus(),
+                        reservation.getCreated()
+                ))
+                .collect(Collectors.toList());
     }
 }

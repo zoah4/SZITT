@@ -56,4 +56,17 @@ public class ReviewService {
 
         reviewRepository.save(review);
     }
+
+    public void editReview(Long id, ReviewDTO dto) {
+        Review review = reviewRepository.findById(id).get();
+
+        review.setComment(dto.getComment());
+        review.setRating(dto.getRating());
+
+        reviewRepository.save(review);
+    }
+
+    public void deleteReview(Long id) {
+        this.reviewRepository.deleteById(id);
+    }
 }

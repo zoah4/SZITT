@@ -1,11 +1,9 @@
 package szitt.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import szitt.service.ReviewService;
 import szitt.model.Review;
+import szitt.dto.ReviewDTO;
 
 import java.util.Optional;
 
@@ -35,5 +33,15 @@ public class ReviewController {
     @GetMapping("/attendant/{attendantId}")
     public Iterable<Review> getAllByAttendant(@PathVariable Long attendantId) {
         return this.service.getAllByAttendant(attendantId);
+    }
+
+    @PutMapping("/{id}")
+    public void editReview(@PathVariable Long id, @RequestBody ReviewDTO dto) {
+        this.service.editReview(id, dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteReview(@PathVariable Long id) {
+        this.service.deleteReview(id);
     }
 }

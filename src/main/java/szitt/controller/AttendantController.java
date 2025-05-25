@@ -18,9 +18,9 @@ public class AttendantController {
     private final AttendantService attendantService;
     private final ReservationService reservationService;
     private final ReviewService reviewService;
-    public AttendantController(AttendantService attendantService, ReservationService reservationservice, ReviewService reviewService) {
+    public AttendantController(AttendantService attendantService, ReservationService reservationService, ReviewService reviewService) {
         this.attendantService = attendantService;
-        this.reservationService = reservationservice;
+        this.reservationService = reservationService;
         this.reviewService = reviewService;
     }
 

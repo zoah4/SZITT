@@ -1,6 +1,7 @@
 package szitt.controller;
 
 import org.springframework.web.bind.annotation.*;
+import szitt.dto.ReservationDTO;
 import szitt.model.ReservationReview;
 import szitt.service.ReservationService;
 import szitt.model.Reservation;
@@ -54,5 +55,15 @@ public class ReservationController {
     public Optional<ReservationReview> getReservationWithReview(@PathVariable Long reservationId) {
         return this.service.getReservationWithReview(reservationId);
     }
+
+    @GetMapping("/search")
+    public Iterable<ReservationDTO> searchReservations(
+            @RequestParam(required = false) Long instructorId,
+            @RequestParam(required = false) Long attendantId,
+            @RequestParam(required = false) Long subjectId
+    ) {
+        return service.searchReservations(instructorId, attendantId, subjectId);
+    }
+
 
 }
