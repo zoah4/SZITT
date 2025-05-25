@@ -39,6 +39,23 @@
           <br>
           <button class="btn btn-primary" type="submit">Spremi podatke instrukcija</button>
         </form>
+        <div class="mb-4">
+          <h3 class="text-lg font-semibold mb-2">Predmeti koje podučavam:</h3>
+
+          <div v-for="predmet in allSubjects" :key="predmet.id" class="mb-1">
+            <label>
+              <input
+                  type="checkbox"
+                  :value="predmet.id"
+                  :checked="selectedSubjects.includes(predmet.id)"
+                  @change="toggleSubject(predmet.id, $event.target.checked)"
+              />
+              {{ predmet.name }}
+            </label>
+          </div>
+        </div>
+        <br>
+        <SubjectManager />
       </div>
       <div>
         <div class="mt-6">
@@ -72,28 +89,14 @@
               </div>
             </div>
           </div>
+
         </div>
         <ConfirmedReservations :userId="user.id" />
+        <CompletedReservations :userId="user.id" />
       </div>
 
     </section>
-    <div class="mb-4">
-      <h3 class="text-lg font-semibold mb-2">Predmeti koje podučavam:</h3>
 
-      <div v-for="predmet in allSubjects" :key="predmet.id" class="mb-1">
-        <label>
-          <input
-              type="checkbox"
-              :value="predmet.id"
-              :checked="selectedSubjects.includes(predmet.id)"
-              @change="toggleSubject(predmet.id, $event.target.checked)"
-          />
-          {{ predmet.name }}
-        </label>
-      </div>
-    </div>
-    <br>
-    <SubjectManager />
 
   </div>
 </template>
@@ -102,6 +105,7 @@
 import Notifications from '@/components/Notifications.vue'
 import ConfirmedReservations from '@/components/ConfirmedReservationsInstructor.vue'
 import SubjectManager from '@/components/SubjectManager.vue'
+import CompletedReservations from '@/components/CompletedInstructor.vue'
 
 import { format } from 'date-fns'
 
@@ -109,7 +113,8 @@ export default {
   components: {
     Notifications,
     ConfirmedReservations,
-    SubjectManager
+    SubjectManager,
+    CompletedReservations
   },
   name: 'InstruktorProfile',
   data() {
