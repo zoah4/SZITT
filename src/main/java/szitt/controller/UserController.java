@@ -33,11 +33,4 @@ public class UserController {
     public void deleteUser(@PathVariable Long id) {
         this.service.deleteUser(id);
     }
-
-
-
-    /*@PutMapping
-    public Optional<User> editProfile(@PathVariable Long id, UserDTO dto) {
-        return this.service.getUser(id);
-    }*/
 }
